@@ -25,7 +25,7 @@ namespace FitNotificaion2.Controllers
 
         private void ParshData(HtmlDocument doc)
         {
-            HtmlNodeCollection nodelist = doc.DocumentNode.SelectNodes("//*[@id='region-main']/div/div/div/ul/li[@class='activity resource modtype_resource'");
+            HtmlNodeCollection nodelist = doc.DocumentNode.SelectNodes("//*[contains(@id,'module')]");
 
              foreach (HtmlNode node in nodelist)
             {
