@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ELearningNotificationServiceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="FBUser">
+          <Key>
+            <PropertyRef Name="FBID" />
+          </Key>
+          <Property Name="FBID" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ELUsername" Type="nvarchar" MaxLength="255" />
+          <Property Name="ULPassword" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="FBUserLinkPost">
+          <Key>
+            <PropertyRef Name="FBID" />
+            <PropertyRef Name="HrefTrack" />
+          </Key>
+          <Property Name="FBID" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="HrefTrack" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LinkPost">
+          <Key>
+            <PropertyRef Name="HrefTrack" />
+          </Key>
+          <Property Name="HrefTrack" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Tittle" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="IDPost" />
+          </Key>
+          <Property Name="IDPost" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Title" Type="ntext" />
+          <Property Name="HrefTrack" Type="nvarchar" MaxLength="255" />
+          <Property Name="PostLink" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="SystemLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DateCreate" Type="datetime" />
+          <Property Name="Message" Type="ntext" />
+        </EntityType>
+        <Association Name="FK_FBUserLinkPost_FBUser">
+          <End Role="FBUser" Type="Self.FBUser" Multiplicity="1" />
+          <End Role="FBUserLinkPost" Type="Self.FBUserLinkPost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FBUser">
+              <PropertyRef Name="FBID" />
+            </Principal>
+            <Dependent Role="FBUserLinkPost">
+              <PropertyRef Name="FBID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FBUserLinkPost_LinkPost">
+          <End Role="LinkPost" Type="Self.LinkPost" Multiplicity="1" />
+          <End Role="FBUserLinkPost" Type="Self.FBUserLinkPost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LinkPost">
+              <PropertyRef Name="HrefTrack" />
+            </Principal>
+            <Dependent Role="FBUserLinkPost">
+              <PropertyRef Name="HrefTrack" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Post_LinkPost">
+          <End Role="LinkPost" Type="Self.LinkPost" Multiplicity="0..1" />
+          <End Role="Post" Type="Self.Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LinkPost">
+              <PropertyRef Name="HrefTrack" />
+            </Principal>
+            <Dependent Role="Post">
+              <PropertyRef Name="HrefTrack" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ELearningNotificationServiceModelStoreContainer">
+          <EntitySet Name="FBUser" EntityType="Self.FBUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LinkPost" EntityType="Self.LinkPost" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Post" EntityType="Self.Post" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemLog" EntityType="Self.SystemLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FBUserLinkPost" EntityType="Self.FBUserLinkPost" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [FBUserLinkPost].[FBID] AS [FBID], 
+    [FBUserLinkPost].[HrefTrack] AS [HrefTrack]
+    FROM [dbo].[FBUserLinkPost] AS [FBUserLinkPost]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_FBUserLinkPost_FBUser" Association="Self.FK_FBUserLinkPost_FBUser">
+            <End Role="FBUser" EntitySet="FBUser" />
+            <End Role="FBUserLinkPost" EntitySet="FBUserLinkPost" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FBUserLinkPost_LinkPost" Association="Self.FK_FBUserLinkPost_LinkPost">
+            <End Role="LinkPost" EntitySet="LinkPost" />
+            <End Role="FBUserLinkPost" EntitySet="FBUserLinkPost" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Post_LinkPost" Association="Self.FK_Post_LinkPost">
+            <End Role="LinkPost" EntitySet="LinkPost" />
+            <End Role="Post" EntitySet="Post" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ELearningNotificationServiceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="FBUser">
+          <Key>
+            <PropertyRef Name="FBID" />
+          </Key>
+          <Property Name="FBID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ELUsername" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ULPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LinkPosts" Relationship="Self.FBUserLinkPost" FromRole="FBUser" ToRole="LinkPost" />
+        </EntityType>
+        <EntityType Name="LinkPost">
+          <Key>
+            <PropertyRef Name="HrefTrack" />
+          </Key>
+          <Property Name="HrefTrack" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Tittle" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Posts" Relationship="Self.FK_Post_LinkPost" FromRole="LinkPost" ToRole="Post" />
+          <NavigationProperty Name="FBUsers" Relationship="Self.FBUserLinkPost" FromRole="LinkPost" ToRole="FBUser" />
+        </EntityType>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="IDPost" />
+          </Key>
+          <Property Name="IDPost" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HrefTrack" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PostLink" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LinkPost" Relationship="Self.FK_Post_LinkPost" FromRole="Post" ToRole="LinkPost" />
+        </EntityType>
+        <EntityType Name="SystemLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DateCreate" Type="DateTime" Precision="3" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_Post_LinkPost">
+          <End Role="LinkPost" Type="Self.LinkPost" Multiplicity="0..1" />
+          <End Role="Post" Type="Self.Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LinkPost">
+              <PropertyRef Name="HrefTrack" />
+            </Principal>
+            <Dependent Role="Post">
+              <PropertyRef Name="HrefTrack" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FBUserLinkPost">
+          <End Role="FBUser" Type="Self.FBUser" Multiplicity="*" />
+          <End Role="LinkPost" Type="Self.LinkPost" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="ELearningNotificationServiceEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="FBUsers" EntityType="Self.FBUser" />
+          <EntitySet Name="LinkPosts" EntityType="Self.LinkPost" />
+          <EntitySet Name="Posts" EntityType="Self.Post" />
+          <EntitySet Name="SystemLogs" EntityType="Self.SystemLog" />
+          <AssociationSet Name="FK_Post_LinkPost" Association="Self.FK_Post_LinkPost">
+            <End Role="LinkPost" EntitySet="LinkPosts" />
+            <End Role="Post" EntitySet="Posts" />
+          </AssociationSet>
+          <AssociationSet Name="FBUserLinkPost" Association="Self.FBUserLinkPost">
+            <End Role="FBUser" EntitySet="FBUsers" />
+            <End Role="LinkPost" EntitySet="LinkPosts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ELearningNotificationServiceModelStoreContainer" CdmEntityContainer="ELearningNotificationServiceEntities">
+          <EntitySetMapping Name="FBUsers">
+            <EntityTypeMapping TypeName="ELearningNotificationServiceModel.FBUser">
+              <MappingFragment StoreEntitySet="FBUser">
+                <ScalarProperty Name="FBID" ColumnName="FBID" />
+                <ScalarProperty Name="ELUsername" ColumnName="ELUsername" />
+                <ScalarProperty Name="ULPassword" ColumnName="ULPassword" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LinkPosts">
+            <EntityTypeMapping TypeName="ELearningNotificationServiceModel.LinkPost">
+              <MappingFragment StoreEntitySet="LinkPost">
+                <ScalarProperty Name="HrefTrack" ColumnName="HrefTrack" />
+                <ScalarProperty Name="Tittle" ColumnName="Tittle" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Posts">
+            <EntityTypeMapping TypeName="ELearningNotificationServiceModel.Post">
+              <MappingFragment StoreEntitySet="Post">
+                <ScalarProperty Name="IDPost" ColumnName="IDPost" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="HrefTrack" ColumnName="HrefTrack" />
+                <ScalarProperty Name="PostLink" ColumnName="PostLink" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemLogs">
+            <EntityTypeMapping TypeName="ELearningNotificationServiceModel.SystemLog">
+              <MappingFragment StoreEntitySet="SystemLog">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="DateCreate" ColumnName="DateCreate" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="FBUserLinkPost" TypeName="ELearningNotificationServiceModel.FBUserLinkPost" StoreEntitySet="FBUserLinkPost">
+            <EndProperty Name="FBUser">
+              <ScalarProperty Name="FBID" ColumnName="FBID" />
+            </EndProperty>
+            <EndProperty Name="LinkPost">
+              <ScalarProperty Name="HrefTrack" ColumnName="HrefTrack" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
