@@ -8,8 +8,10 @@ namespace FitNotificaion2.Controllers
     public class NewPost
     {
         public string TieuDe;
-        public bool LaPostMoi;
+        public string id;
         public DateTime NgayPost;
         public string href;
+
+        public bool isNewPost = true;
     }
 }

@@ -14,24 +14,42 @@ namespace FitNotificaion2.Controllers
     public class HomeController : Controller
     {
        // FitNotificationDBEntities db = new FitNotificationDBEntities();
-
+        private List<NewPost> listnewpost = new List<NewPost>();
         public ActionResult Index()
         { 
             HtmlDocument doc = LoginandParseHTML("http://elearning.eduapps.edu.vn/uel/course/view.php?id=65");
-            ParshData(doc);
+            ParshDataHtml(doc);
 
+            EndTask();
             return View();
         }
 
-        private void ParshData(HtmlDocument doc)
+        private void ParshDataHtml(HtmlDocument doc)
         {
             HtmlNodeCollection nodelist = doc.DocumentNode.SelectNodes("//*[contains(@id,'module')]");
 
              foreach (HtmlNode node in nodelist)
             {
-                NewPost item = new NewPost();                
+                NewPost item = new NewPost();
+                item.id = node.Attributes["id"].Value;
+
+                // XPATH: "/div/div/a/span" Lay ten cua node
+                HtmlNode namenode = node.ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes[1];
+                item.TieuDe = namenode.InnerText;
+                item.NgayPost = DateTime.Now;
+
+                CheckNewPost(item);
             }
         }
+
+        private void CheckNewPost(NewPost post)
+        {
+            if(post.isNewPost)
+            {
+                listnewpost.Add(post);
+            }
+        }
+
         private HtmlDocument LoginandParseHTML(string href)
         {
             BrowserSession b = new BrowserSession();
@@ -48,6 +66,10 @@ namespace FitNotificaion2.Controllers
             return doc;
         }
          
+        private void EndTask()
+        {
+            listnewpost.Clear();
+        }
 
         //public ActionResult Baiviet()
         //{
