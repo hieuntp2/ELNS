@@ -12,6 +12,6 @@ namespace FitNotificaion2.Controllers
         public DateTime NgayPost;
         public string href;
 
-        public bool isNewPost = true;
+        public bool isNewPost = false;
     }
 }

@@ -11,20 +11,31 @@ using System.Web.Mvc;
 
 namespace FitNotificaion2.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
-       // FitNotificationDBEntities db = new FitNotificationDBEntities();
+        ELearningNotificationServiceEntities db = new ELearningNotificationServiceEntities();
+
         private List<NewPost> listnewpost = new List<NewPost>();
         public ActionResult Index()
         { 
-            HtmlDocument doc = LoginandParseHTML("http://elearning.eduapps.edu.vn/uel/course/view.php?id=65");
-            ParshDataHtml(doc);
+            //string href = "http://elearning.eduapps.edu.vn/uel/course/view.php?id=65";
+            //HtmlDocument doc = LoginandParseHTML(href);
+            //ParshDataHtml(doc, href);
 
-            EndTask();
-            return View();
+            //EndTask();
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                return View();
+            }
         }
 
-        private void ParshDataHtml(HtmlDocument doc)
+        private void ParshDataHtml(HtmlDocument doc, string href)
         {
             HtmlNodeCollection nodelist = doc.DocumentNode.SelectNodes("//*[contains(@id,'module')]");
 
@@ -37,6 +48,7 @@ namespace FitNotificaion2.Controllers
                 HtmlNode namenode = node.ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes[1];
                 item.TieuDe = namenode.InnerText;
                 item.NgayPost = DateTime.Now;
+                item.href = href;
 
                 CheckNewPost(item);
             }
@@ -44,9 +56,36 @@ namespace FitNotificaion2.Controllers
 
         private void CheckNewPost(NewPost post)
         {
-            if(post.isNewPost)
+            Post item = db.Posts.SingleOrDefault(t => t.IDPost == post.id);
+
+            if (item == null)
             {
+                post.isNewPost = true;
                 listnewpost.Add(post);
+
+                item = new Post();
+                item.Title = post.TieuDe;
+                item.IDPost = post.id;
+                item.HrefTrack = post.href;               
+
+                addPostToDatabase(item);
+            }
+            else
+            {
+                post.isNewPost = false;
+            }
+        }
+
+        private void addPostToDatabase(Post post)
+        {
+            try
+            {
+                db.Posts.Add(post);
+                db.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                Unities.WriteLog("LOI khi ghi Post: " + post.IDPost + ": " + post.Title + ". " + e.ToString());
             }
         }
 
@@ -71,32 +110,32 @@ namespace FitNotificaion2.Controllers
             listnewpost.Clear();
         }
 
-        //public ActionResult Baiviet()
-        //{
+        public ActionResult Baiviet()
+        {
 
-        //    List<Post> posts = db.Posts.OrderByDescending(t => t.NgayTao).ToList();
-        //    return View(posts);
-        //}
+            List<Post> posts = db.Posts.OrderByDescending(t => t.DateCreate).ToList();
+            return View(posts);
+        }
 
-        //public ActionResult DaDangNhap()
-        //{
-        //    return View();
-        //}
+        public ActionResult DaDangNhap()
+        {
+            return View();
+        }
 
-        //public ActionResult ChinhSachBaoMat()
-        //{
-        //    return View();
-        //}
+        public ActionResult ChinhSachBaoMat()
+        {
+            return View();
+        }
 
-        //public ActionResult DieuKhoan()
-        //{
-        //    return View();
-        //}
+        public ActionResult DieuKhoan()
+        {
+            return View();
+        }
 
-        //public ActionResult GioiThieu()
-        //{
-        //    return View();            
-        //}
+        public ActionResult GioiThieu()
+        {
+            return View();
+        }
     }
 
 }

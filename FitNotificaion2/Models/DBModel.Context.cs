@@ -29,5 +29,6 @@ namespace FitNotificaion2.Models
         public virtual DbSet<LinkPost> LinkPosts { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<SystemLog> SystemLogs { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
     }
 }

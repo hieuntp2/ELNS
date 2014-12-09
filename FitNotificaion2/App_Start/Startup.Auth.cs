@@ -48,8 +48,8 @@ namespace FitNotificaion2
 
 
             app.UseFacebookAuthentication(
-               appId: "383036875207364",
-               appSecret: "36665fb5bc72f8ed2dcfd743a5ec047e");
+               appId: "1510651435867769",
+               appSecret: "0cdc098e39b86712ebaa47f01a75b48f");
 
 
         }

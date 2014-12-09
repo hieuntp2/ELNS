@@ -1,4 +1,5 @@
 ﻿using Facebook;
+using FitNotificaion2.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,10 @@ using System.Web;
 
 namespace FitNotificaion2.Controllers
 {
-    public class Unities
+    public static class Unities
     {
-        public string getAccessToken()
+        static ELearningNotificationServiceEntities db = new ELearningNotificationServiceEntities();
+        public static string getAccessToken()
         {
             var fb = new FacebookClient();
             dynamic result = fb.Get("oauth/access_token", new
@@ -22,6 +24,16 @@ namespace FitNotificaion2.Controllers
 
             var apptoken = result.access_token;
             return apptoken;
+        }
+
+        public static void WriteLog(string message)
+        {
+            SystemLog log = new SystemLog();
+            log.DateCreate = DateTime.Now;
+            log.Message = message;
+
+            db.SystemLogs.Add(log);
+            db.SaveChanges();
         }
     }
 

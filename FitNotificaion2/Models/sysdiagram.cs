@@ -12,18 +12,12 @@ namespace FitNotificaion2.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class FBUser
+    public partial class sysdiagram
     {
-        public FBUser()
-        {
-            this.LinkPosts = new HashSet<LinkPost>();
-        }
-    
-        public string FBID { get; set; }
-        public string ELUsername { get; set; }
-        public string ULPassword { get; set; }
-        public Nullable<int> Status { get; set; }
-    
-        public virtual ICollection<LinkPost> LinkPosts { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

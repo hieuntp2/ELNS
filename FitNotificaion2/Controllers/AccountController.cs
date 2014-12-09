@@ -16,7 +16,7 @@ namespace FitNotificaion2.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-     //   FitNotificationDBEntities db = new FitNotificationDBEntities();
+        ELearningNotificationServiceEntities db = new ELearningNotificationServiceEntities();
         private ApplicationUserManager _userManager;
 
         //
@@ -71,9 +71,11 @@ namespace FitNotificaion2.Controllers
                 return RedirectToAction("Login");
             }
 
-            //createaAccount(loginInfo.Login.ProviderKey, "Abc123!");
-            //addFBUser(loginInfo.Login.ProviderKey);
-            loginInfo.Login.ProviderKey += "@fitnew.edu";
+            loginInfo.Login.ProviderKey += "@els.edu";
+            loginInfo.Email = loginInfo.Login.ProviderKey;
+            createaAccount(loginInfo.Login.ProviderKey, "Abc123!");            
+            addFBUser(loginInfo.Login.ProviderKey);
+            
             // Sign in the user with this external login provider if the user already has a login
             var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
             switch (result)
@@ -123,7 +125,6 @@ namespace FitNotificaion2.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
-           // return View("LoginPartial");
             return View();
         }
 
@@ -170,8 +171,7 @@ namespace FitNotificaion2.Controllers
 
         public string createaAccount(string username, string password)
         {
-            RegisterViewModel model = new RegisterViewModel();
-            model.Email = username + "@fitnew.edu";
+            RegisterViewModel model = new RegisterViewModel();           
             model.Password = password;
             if (ModelState.IsValid)
             {
@@ -196,25 +196,23 @@ namespace FitNotificaion2.Controllers
             return "FAIL";
         }
 
-        //private string addFBUser(string uid)
-        //{
-        //    // Add User to database           
+        private string addFBUser(string uid)
+        {
+            // Add User to database           
 
-        //    FBUser fbuser = db.FBUsers.SingleOrDefault(t => t.FBID == uid);
+            FBUser fbuser = db.FBUsers.SingleOrDefault(t => t.FBID == uid);
 
-        //    if (fbuser == null)
-        //    {
-        //        fbuser = new FBUser();
-        //        fbuser.FBID = uid;
-        //        db.FBUsers.Add(fbuser);
-        //        db.SaveChanges();
-        //        return "ADD";
-        //    }
+            if (fbuser == null)
+            {
+                fbuser = new FBUser();
+                fbuser.FBID = uid;
+                db.FBUsers.Add(fbuser);
+                db.SaveChanges();
+                return "ADD";
+            }
 
-        //    return "ALR";
-        //}
-
-      
+            return "ALR";
+        }      
 
         //
         // POST: /Account/ExternalLogin

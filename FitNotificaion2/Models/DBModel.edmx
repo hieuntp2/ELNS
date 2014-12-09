@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ELearningNotificationServiceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ELearningNotificationServiceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="FBUser">
           <Key>
             <PropertyRef Name="FBID" />
@@ -12,6 +12,7 @@
           <Property Name="FBID" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="ELUsername" Type="nvarchar" MaxLength="255" />
           <Property Name="ULPassword" Type="nvarchar" MaxLength="255" />
+          <Property Name="Status" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -22,6 +23,7 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
           </Key>
           <Property Name="FBID" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="HrefTrack" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Ten" Type="ntext" />
         </EntityType>
         <EntityType Name="LinkPost">
           <Key>
@@ -38,6 +40,17 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
           <Property Name="Title" Type="ntext" />
           <Property Name="HrefTrack" Type="nvarchar" MaxLength="255" />
           <Property Name="PostLink" Type="nvarchar" MaxLength="255" />
+          <Property Name="DateCreate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="SystemLog">
           <Key>
@@ -87,11 +100,13 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
           <EntitySet Name="FBUser" EntityType="Self.FBUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LinkPost" EntityType="Self.LinkPost" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Post" EntityType="Self.Post" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SystemLog" EntityType="Self.SystemLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FBUserLinkPost" EntityType="Self.FBUserLinkPost" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [FBUserLinkPost].[FBID] AS [FBID], 
-    [FBUserLinkPost].[HrefTrack] AS [HrefTrack]
+    [FBUserLinkPost].[HrefTrack] AS [HrefTrack], 
+    [FBUserLinkPost].[Ten] AS [Ten]
     FROM [dbo].[FBUserLinkPost] AS [FBUserLinkPost]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_FBUserLinkPost_FBUser" Association="Self.FK_FBUserLinkPost_FBUser">
@@ -107,8 +122,7 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
             <End Role="Post" EntitySet="Post" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ELearningNotificationServiceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -120,6 +134,7 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
           <Property Name="ELUsername" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ULPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LinkPosts" Relationship="Self.FBUserLinkPost" FromRole="FBUser" ToRole="LinkPost" />
+          <Property Name="Status" Type="Int32" />
         </EntityType>
         <EntityType Name="LinkPost">
           <Key>
@@ -139,6 +154,7 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
           <Property Name="HrefTrack" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PostLink" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LinkPost" Relationship="Self.FK_Post_LinkPost" FromRole="Post" ToRole="LinkPost" />
+          <Property Name="DateCreate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="SystemLog">
           <Key>
@@ -177,7 +193,18 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
             <End Role="FBUser" EntitySet="FBUsers" />
             <End Role="LinkPost" EntitySet="LinkPosts" />
           </AssociationSet>
+          <EntitySet Name="sysdiagrams" EntityType="ELearningNotificationServiceModel.sysdiagram" />
         </EntityContainer>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -187,6 +214,7 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
           <EntitySetMapping Name="FBUsers">
             <EntityTypeMapping TypeName="ELearningNotificationServiceModel.FBUser">
               <MappingFragment StoreEntitySet="FBUser">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="FBID" ColumnName="FBID" />
                 <ScalarProperty Name="ELUsername" ColumnName="ELUsername" />
                 <ScalarProperty Name="ULPassword" ColumnName="ULPassword" />
@@ -204,6 +232,7 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
           <EntitySetMapping Name="Posts">
             <EntityTypeMapping TypeName="ELearningNotificationServiceModel.Post">
               <MappingFragment StoreEntitySet="Post">
+                <ScalarProperty Name="DateCreate" ColumnName="DateCreate" />
                 <ScalarProperty Name="IDPost" ColumnName="IDPost" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="HrefTrack" ColumnName="HrefTrack" />
@@ -228,6 +257,17 @@ warning 6002: The table/view 'ELearningNotificationService.dbo.FBUserLinkPost' d
               <ScalarProperty Name="HrefTrack" ColumnName="HrefTrack" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ELearningNotificationServiceModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

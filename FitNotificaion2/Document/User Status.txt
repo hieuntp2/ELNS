@@ -1,0 +1,20 @@
+﻿This is define use status in database:
+
+- 0: moi duoc khoi tao, chua bao gio su dung de login vao website
+- 1: da duoc su dung de login vao website
+
+Cac loi xuat hien va thong bao:
+- 9: Loi xuat hien khi su dung ten dang nhap/ mat khau de dang nhap vao tai khoan
+
+Qua trinh su dung web:
+
+Q1: Dang ky website (Chi dang nhap bang facebook)
+Q2: Dang nhap website, Su dung Menu chinh de quan ly cac link dang ky
+Q3: Quan ly cac thong bao cua nguoi dung
+
+Cac Man hinh can phai lam
+
+M1: Dang ky
+M2: Dang nhap
+M3: Quan ly cac Link da Dang Ky
+M4: Notification

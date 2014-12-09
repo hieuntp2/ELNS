@@ -18,6 +18,7 @@ namespace FitNotificaion2.Models
         public string Title { get; set; }
         public string HrefTrack { get; set; }
         public string PostLink { get; set; }
+        public Nullable<System.DateTime> DateCreate { get; set; }
     
         public virtual LinkPost LinkPost { get; set; }
     }
